@@ -1,0 +1,7 @@
+__pycache__
+*.xlsx
+*.pdf
+
+*.csv
+*.doc*
+requirements.txt
