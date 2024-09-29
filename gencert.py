@@ -250,7 +250,7 @@ def main(date, final, input_file):
     for data in records:
         cert_year, cert_num = gen_cert_number(cert_year, cert_num)
         data["certificate_number"] = f"{cert_year:4d}/{cert_num:04d}"
-        data["certificate_date"] = cert_date
+        data["certificate_date"] = max(cert_date, data["end_date"])
         docx_prefix = data["certificate_number"].replace("/", "_")
         docx_output = Path(
             f"int_cert_{docx_prefix}_{mangle_name(data["student_name"])}.docx"
