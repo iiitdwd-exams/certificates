@@ -194,7 +194,7 @@ def mangle_name(name: str) -> str:
 @click.argument("input_file", type=click.Path(exists=True))
 @click.option(
     "--final/--no-final",
-    default=True,
+    default=False,
     help="Preview, do not actualy create certificates",
 )
 def main(date, final, input_file):
