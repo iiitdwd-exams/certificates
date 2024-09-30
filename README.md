@@ -27,14 +27,37 @@ In addition, this script requires LibreOffice (or OpenOffice) to be installed as
 # Installation
 Follow these steps:
 
-1. Create a separate directory for the script and within that directory, create a virtual environment using Python 3.12+
-2. Install either `uv` or `pip-tools` using `pipx` if not already done.
-3. Clone the Github repository
-4. Create `requirements.txt` using `uv` or `pip-compile`. `uv pip compile requirements.in -o requirements.txt` or `pip-compile requirements.in -o requirements.txt`
-5. Install required packages using `uv` or `pi-sync`. `uv pip sync requirements.txt` or `pip-sync requirements.txt`
-6. Check if LibreOffice is installed, and if not install it from here: `https://www.libreoffice.org/`. Determine the path where `soffice` is installed. On GNU/Linux, use the `which soffice` command and on Windows, use `where soffice` command. If it is already on the `PATH` environment variable, it will be located. Else, use any method to determine the path to `soffice`, such as, looking up the properties of LibreOffice in your Windows Start menu.
+1. Create a separate directory for the script and within that directory, create a virtual environment using Python 3.12+ and activate it.
+2. You must have either `uv` or `pip-tools` to manage package installation and updation. Install one of them `uv` or `pip-tools`. The best way is to use `pipx` to install them in their separate virtual environments and make them available to all projects.
+3. Clone the Github repository `git clone https://github.com/satish-annigeri/certificates.git`.
+4. Create `requirements.txt` using `uv` or `pip-compile` (`uv pip compile requirements.in -o requirements.txt` or `pip-compile requirements.in -o requirements.txt`)
+5. Install required packages using `uv` or `pi-sync`. (`uv pip sync requirements.txt` or `pip-sync requirements.txt`)
+6. Check if LibreOffice is installed, and if not, install it from here: `https://www.libreoffice.org/`. Determine the path where `soffice` is installed. On GNU/Linux, use the `which soffice` command and on Windows, use `where soffice` command. If it is already on the `PATH` environment variable, it will be located. Else, use any method to determine the path to `soffice`, such as, looking up the properties of LibreOffice in your Windows Start menu. Open the script `gencert.py` in your IDE and search for `libre_office_path` and change it appropriately.
 
 # Input Data
+Data is input in a Microsoft Excel `.xlsx` file.Following column names are mandatory:
+1. `student_name`: Name of the student. If the student's name starts with one of `Mr.`, `Ms.`, or `Mrs.`, that portion, along with a following space if present, will be removed when used in printing the name in the certificate.
+2. `gender`: Gender of the student. Can be `M` for male, `F` for female or any other letter or empty. This will determine whether the student's name in the certificate is prefixed with `Mr. `, `Ms. ` or left unchanged.
+3. `start_date`: Start date of the internship.
+4. `end_date`: Last date of the inetrnship.
+5. `supervisor_name`: Name of the supervisor. Will be printed as is. Include `Dr. ` or `Prof. ` as the case may be when writing the name.
+6. `designation`: Designation of the supervisor.
+7. `department`: Department of the supervisor.
+8. `project_title`: Title of the project on which the intern worked.
+
+If any other columns are present, they will be read but not used.
 
 # Executing the Script
+Place the input data file in the same directory as the script and execute the command:
 
+`(venv)>python gencert.py --no-final int_cert_data.xlsx`
+
+where `int_cert_data.xlsx` is the Microsoft Excel file containing the data as described above. With the `--no-final` switch, only a dry run is executed, certificates will not be generated. The screen output gives you an idea if the data was arranged correctly in the input data file.
+
+To generate thecertificates, use the command:
+
+`(venv)>python gencert.py --final int_cert_data.xlsx`
+
+Check all data in the certificates to verify everything is in order.
+
+A successful run of the script generates a CSV file is written, with the name of the `.xlsx` file suffixed with `_DB` and an extension `.csv`. It containes all data, including certificate number, owner password, which can be stored for subsequent use, if required.
