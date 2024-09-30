@@ -20,7 +20,9 @@ elif sys.platform == "darwin":
 
 if not Path(libre_office_path).is_file():
     print(f"Expects 'LibreOffice' to be installed at {libre_office_path}")
-    print("Change the path if installed, else install LibreOffice and set the path")
+    print(
+        "Change the path if installed, else install LibreOffice and set the path in the script"
+    )
     print("Program aborted")
     sys.exit(0)
 
