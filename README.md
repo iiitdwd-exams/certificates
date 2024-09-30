@@ -10,6 +10,15 @@ The general ideas on which it works are as follows:
 4. A PDF file with a QR code containing all the fields is created and merged with the PDF file containing the certificate.
 5. The certificate file with the QR code is then assigned a owner password to prevent editing and copying of the PDF file. However, no restriction is placed on printing the certificate.
 
+# Requirements
+You will need the following:
+1. Python 3.12+
+2. Git to clone the Github repo
+3. One of `uv` or `pip-tools` to manage installation of required packages. You can manage it with just `pip` if you know Python well.
+4. LibreOffice (or OpenOffice) to because this script uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
+
+If you wish to use `uv` or `pip-tools`, it is best to install them using `pipx`.
+
 # Dependencies
 This project depends on the following Python packages:
 
@@ -22,13 +31,11 @@ This project depends on the following Python packages:
 7. `toml`: It is used to maintain a configuration file
 8. `click`: It is used to define command line options and arguments.
 
-In addition, this script requires LibreOffice (or OpenOffice) to be installed as it uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
-
 # Installation
 Follow these steps:
 
 1. Create a separate directory for the script and within that directory, create a virtual environment using Python 3.12+ and activate it.
-2. You must have either `uv` or `pip-tools` to manage package installation and updation. Install one of them `uv` or `pip-tools`. The best way is to use `pipx` to install them in their separate virtual environments and make them available to all projects.
+2. Use `uv` or `pip-tools` to manage package installation and updation. Install one of them `uv` or `pip-tools`. The best way is to use `pipx` to install them in their separate virtual environments and make them available to all projects.
 3. Clone the Github repository `git clone https://github.com/satish-annigeri/certificates.git`.
 4. Create `requirements.txt` using `uv` or `pip-compile` (`uv pip compile requirements.in -o requirements.txt` or `pip-compile requirements.in -o requirements.txt`)
 5. Install required packages using `uv` or `pi-sync`. (`uv pip sync requirements.txt` or `pip-sync requirements.txt`)
