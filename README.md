@@ -13,14 +13,14 @@ The general ideas on which it works are as follows:
 # Dependencies
 This project depends on the following Python packages:
 
-1. Pandas: Data is input from a Microsoft Excel `.xlsx` file, with each row resulting in one certificate. Column names represent the names of merge fields in the template file.
-2. openpyxl: It is a dependency of Pandas when you wish to read and write Microsoft Excel files.
-3. docx-mailmerge2: It is used to merge data from a Python dictionary to populate the template file and generate one certificate.
-4. pikepdf: It is used to set owner password to PDF files.
-5. segno: It is used to generate QR codes in PNG format
-6. PIL: It is used to convert QR code in PNG format to PDF.
-7. toml: It is used to maintain a configuration file
-8. click: It is used to define command line options and arguments.
+1. `pandas`: Data is input from a Microsoft Excel `.xlsx` file, with each row resulting in one certificate. Column names represent the names of merge fields in the template file.
+2. `openpyxl`: It is a dependency of Pandas when you wish to read and write Microsoft Excel files.
+3. `docx-mailmerge2`: It is used to merge data from a Python dictionary to populate the template file and generate one certificate.
+4. `pikepdf`: It is used to set owner password to PDF files.
+5. `segno`: It is used to generate QR codes in PNG format
+6. `PIL`: It is used to convert QR code in PNG format to PDF.
+7. `toml`: It is used to maintain a configuration file
+8. `click`: It is used to define command line options and arguments.
 
 In addition, this script requires LibreOffice (or OpenOffice) to be installed as it uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
 
@@ -61,3 +61,8 @@ To generate thecertificates, use the command:
 Check all data in the certificates to verify everything is in order.
 
 A successful run of the script generates a CSV file is written, with the name of the `.xlsx` file suffixed with `_DB` and an extension `.csv`. It containes all data, including certificate number, owner password, which can be stored for subsequent use, if required.
+
+# To Do
+Certificate number has the format `YYYY/nnnn`, where `YYYY` is the four digit year during which the certificate is printed and `nnnn` is the four digit number of thecertificate in that year. The year and number of the last certificate printed is read from the `gencert.toml` file. Certificate numbering is continued from the number of the last certificate printed. If the current year, read from the system date is later than the year read from the `gencert.toml` file, the certificate number is reset to `1` and current year is used.
+
+However, the script, at present, does not write the year and certificate number back to `gencert.toml` at the end of printing all the certificates. These values must be changed manually by the user using a text editor.
