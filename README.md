@@ -5,7 +5,7 @@
 The general ideas on which it works are as follows:
 
 1. The template for the certificates is a Microsoft Word `.docx` file (hereafter called the **template file**) and has all the static text, images (possibly including images of signatures) in the required character and paragraph formatting.
-2. The template file contains **merge fields** repesentinf the keys which will be replaced by values from a Python dictionary with the matching key.
+2. The template file contains [**merge fields**](https://support.microsoft.com/en-us/office/field-codes-mergefield-field-7a6d24a1-68a6-4b05-8359-1dc087daf4e6) repesentinf the keys which will be replaced by values from a Python dictionary with the matching key.
 3. The template file is populated with data from a Python dictionary and a new Microsoft Word `.docx` file is created. It is then converted to a PDF file using LibreOffice, which must be installed.
 4. A PDF file with a QR code containing all the fields is created and merged with the PDF file containing the certificate.
 5. The certificate file with the QR code is then assigned a owner password to prevent editing and copying of the PDF file. However, no restriction is placed on printing the certificate.
@@ -22,9 +22,9 @@ If you wish to use `uv` or `pip-tools`, it is best to install them using `pipx`.
 # Dependencies
 This project depends on the following Python packages:
 
-1. `pandas`: Data is input from a Microsoft Excel `.xlsx` file, with each row resulting in one certificate. Column names represent the names of merge fields in the template file.
+1. [`pandas`](https://pandas.pydata.org/): Data is input from a Microsoft Excel `.xlsx` file, with each row resulting in one certificate. Column names represent the names of merge fields in the template file.
 2. `openpyxl`: It is a dependency of Pandas when you wish to read and write Microsoft Excel files.
-3. `docx-mailmerge2`: It is used to merge data from a Python dictionary to populate the template file and generate one certificate.
+3. [`docx-mailmerge2`](https://github.com/iulica/docx-mailmerge): It is used to merge data from a Python dictionary to populate the template file and generate one certificate.
 4. `pikepdf`: It is used to set owner password to PDF files.
 5. `segno`: It is used to generate QR codes in PNG format
 6. `PIL`: It is used to convert QR code in PNG format to PDF.
