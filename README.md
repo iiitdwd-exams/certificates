@@ -15,7 +15,7 @@ You will need the following:
 1. Python 3.12+
 2. Git to clone the Github repo
 3. One of `uv` or `pip-tools` to manage installation of required packages. You can manage it with just `pip` if you know Python well.
-4. LibreOffice (or OpenOffice) to because this script uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
+4. LibreOffice (or OpenOffice) because this script uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
 
 If you wish to use `uv` or `pip-tools`, it is best to install them using `pipx`.
 
@@ -42,8 +42,8 @@ Follow these steps:
 6. Check if LibreOffice is installed, and if not, install it from here: `https://www.libreoffice.org/`. Determine the path where `soffice` is installed. On GNU/Linux, use the `which soffice` command and on Windows, use `where soffice` command. If it is already on the `PATH` environment variable, it will be located. Else, use any method to determine the path to `soffice`, such as, looking up the properties of LibreOffice in your Windows Start menu. Open the script `gencert.py` in your IDE and search for `libre_office_path` and change it appropriately.
 
 # Input Data
-Data is input in a Microsoft Excel `.xlsx` file.Following column names are mandatory:
-1. `student_name`: Name of the student. If the student's name starts with one of `Mr.`, `Ms.`, or `Mrs.`, that portion, along with a following space if present, will be removed when used in printing the name in the certificate.
+Data is input in a Microsoft Excel `.xlsx` file. The following column names are mandatory:
+1. `student_name`: Name of the student. If the student's name starts with one of `Mr.`, `Ms.`, or `Mrs.`, that portion, along with a trailing space if present, will be removed when used in printing the name in the certificate.
 2. `gender`: Gender of the student. Can be `M` for male, `F` for female or any other letter or empty. This will determine whether the student's name in the certificate is prefixed with `Mr. `, `Ms. ` or left unchanged.
 3. `start_date`: Start date of the internship.
 4. `end_date`: Last date of the inetrnship.
