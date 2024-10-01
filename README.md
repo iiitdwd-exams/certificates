@@ -12,10 +12,10 @@ The general ideas on which it works are as follows:
 
 # Requirements
 You will need the following:
-1. Python 3.12+
-2. Git to clone the Github repo
-3. One of `uv` or `pip-tools` to manage installation of required packages. You can manage it with just `pip` if you know Python well.
-4. LibreOffice (or OpenOffice) because this script uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
+1. [Python 3.12+](https://www.python.org) 
+2. [Git](https://git-scm.com/) to clone the Github repo
+3. One of [`uv`](https://git-scm.com/) or [`pip-tools`](https://github.com/jazzband/pip-tools/) to manage installation of required packages. You can manage it with just `pip` if you know Python well.
+4. [LibreOffice](https://www.libreoffice.org/) or [OpenOffice](https://www.openoffice.org/) because this script uses the application `soffice` to convert Microsoft Word `.docx` file to PDF file. The path to `soffice` is hardcoded in the script and must be changed appropriately. The script checks for the existence of `soffice` at the start and aborts if it is not found at the defined path.
 
 If you wish to use `uv` or `pip-tools`, it is best to install them using `pipx`.
 
