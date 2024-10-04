@@ -1,5 +1,4 @@
-pandas
-openpyxl
+pandas[excel]
 docx-mailmerge2
 pikepdf
 segno
