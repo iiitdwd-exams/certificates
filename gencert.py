@@ -19,15 +19,18 @@ elif sys.platform == "darwin":
     libre_office_path = "/Applications/LibreOffice.app/Contents/MacOS/soffice"
 
 if not Path(libre_office_path).is_file():
-    print(f"Expects 'LibreOffice' to be installed at {libre_office_path}")
+    print(f"Could not find 'LibreOffice' to be installed at {libre_office_path}")
     print(
-        "Change the path if installed, else install LibreOffice and set the path in the script"
+        "Change the path if installed, else install LibreOffice. Then set the path in the script"
     )
-    print("Program aborted")
+    print("Aborting program")
     sys.exit(0)
 
 
 def read_df(input_fname: str) -> pd.DataFrame:
+    """Read data from a Microsoft Excel or a CSV file and create a DataFrame.
+    Returns an empty DataFrame if the data file does not exist
+    """
     fpath = Path(input_fname)
     if fpath.exists():
         suffix = fpath.suffix
@@ -43,6 +46,9 @@ def read_df(input_fname: str) -> pd.DataFrame:
 
 
 def mod_name(bare_name: str, gender: str) -> str:
+    """Given the bare name (with any prefix Mr., Ms., Ms., Mrs. deleted in advance),
+    adds the prefix 'Mr. ' if gender is M, 'Ms. ' if gender is F, else returns unchanged
+    """
     match gender[0]:
         case "M":
             return f"Mr. {bare_name}"
@@ -53,14 +59,17 @@ def mod_name(bare_name: str, gender: str) -> str:
 
 
 def clean_data(df: pd.DataFrame, prev_cert_num: int):
-    # print(f"Input file {input_file}: Read {len(df)} records")
+    """Clean up the DataFrame created previously by reading a Microsoft Excel or a CSV file"""
     df["start_date"] = df["start_date"].dt.strftime("%d-%m-%Y")
     df["end_date"] = df["end_date"].dt.strftime("%d-%m-%Y")
-    df["gender"] = df["gender"].str[0].str.upper()
+    df["gender"] = (
+        df["gender"].str[0].str.upper()
+    )  # Retain only the first letter, converted to uppercase
     df["bare_name"] = df["student_name"].str.replace(
         r"^[M]{1}[rs]{1}[s]*\.[ ]*", "", regex=True
-    )
+    )  # Create a new column with student name stripped of prefixes Mr., Ms. Mrs. and a following space if any
     df["slaut_name"] = df.apply(lambda r: mod_name(r["bare_name"], r["gender"]), axis=1)
+    # Create new empty columns
     df["certificate_number"] = ""
     df["certificate_date"] = ""
     df["owner_password"] = ""
@@ -74,6 +83,8 @@ def clean_data(df: pd.DataFrame, prev_cert_num: int):
 
 
 def gen_cert_number(year_in_use: int, cert_num: int) -> tuple[int, int]:
+    """Generate certificate numbers in the format YYYY/xxxx based on previous values of current_year
+    and cert_num. Increments YYYY and rolls over xxxx to 1,  if necesary"""
     current_year = datetime.now().year
     if current_year > year_in_use:
         cert_year = current_year
@@ -85,13 +96,14 @@ def gen_cert_number(year_in_use: int, cert_num: int) -> tuple[int, int]:
 
 
 def merge_docx(docx_template, output_docx, df_dict):
-    # Perform mail merge
+    """Perform mail merge"""
     with MailMerge(docx_template) as docx:
         docx.merge(**df_dict)
         docx.write(output_docx)
 
 
 def qr_string(data: dict, fields: list[str]):
+    """Generate string to be embedded into QR code based on fields and values printed on the certificate"""
     qr_str = []
     keys = data.keys()
     for field in fields:
@@ -102,6 +114,9 @@ def qr_string(data: dict, fields: list[str]):
 
 
 def gen_qrpdf(data, qr_fname="qr.png"):
+    """Create the string to be embedded into the QR code, save it to PNG format and create a PDF
+    with only the QR code
+    """
     # Generate the QR code
     fields = [
         "student_name",
@@ -124,6 +139,10 @@ def encrypt_pdf(
     owner_password: str = "",
     user_password: str = "",
 ):
+    """Encrypt a PDF file with a owner password with only permission to print.
+    Can overwrite the original PDF file (if pdf_outfile is not empty) or
+    create a new one (if pdf_outfile is empty)
+    """
     if not pdf_outfile:
         pdf_outfile = pdf_infile
         pdf = Pdf.open(pdf_infile, allow_overwriting_input=True)
@@ -139,6 +158,14 @@ def encrypt_pdf(
 def gen_cert(
     data, docx_template: str, docx_output="test.docx", pdf_output="test.pdf", final=True
 ):
+    """Generates a PDF certificate from a Microsoft Word file with merge fields with values from matching keys
+    in a Python dict. Involves the following steps:
+      1. Merge fields and save as docx file
+      2. Convert merged docx file to PDF using 'soffice'
+      3. Create PDF with only the QR code
+      4. Overlay the PDF with the QR code on the certificate
+      5. Encrypt the overlaid PDF file
+    """
     pdf_outputpath = Path(pdf_output)
     owner_password = ""
     if final:
@@ -176,6 +203,7 @@ def gen_cert(
 
 
 def mangle_name(name: str) -> str:
+    """Generate a string with student name mangled for use as part of certificate filename"""
     return (
         name.replace("Mr. ", "")
         .replace("Ms. ", "")
