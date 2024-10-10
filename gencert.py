@@ -1,7 +1,9 @@
 import sys
-from os.path import isfile
+import os
+from os.path import isfile, exists
 from datetime import datetime
 from pathlib import Path
+import uuid
 import secrets
 import subprocess
 
@@ -25,6 +27,10 @@ if not Path(libre_office_path).is_file():
     )
     print("Aborting program")
     sys.exit(0)
+
+
+def get_randomm_filename(prefix: str = "", ext: str = "") -> str:
+    return f"{prefix}{uuid.uuid4().hex}{ext}"
 
 
 def read_df(input_fname: str) -> pd.DataFrame:
@@ -156,7 +162,7 @@ def encrypt_pdf(
 
 
 def gen_cert(
-    data, docx_template: str, docx_output="test.docx", pdf_output="test.pdf", final=True
+    data, docx_template: str, docx_cert="cert.docx", pdf_cert="cert.pdf", final=True
 ):
     """Generates a PDF certificate from a Microsoft Word file with merge fields with values from matching keys
     in a Python dict. Involves the following steps:
@@ -166,30 +172,34 @@ def gen_cert(
       4. Overlay the PDF with the QR code on the certificate
       5. Encrypt the overlaid PDF file
     """
-    pdf_outputpath = Path(pdf_output)
+    # pdf_certpath = Path(pdf_cert)
     owner_password = ""
     if final:
+        tmp_fname = get_randomm_filename()
+        tmp_docx_cert = f"{tmp_fname}.docx"
+        tmp_pdf_cert = f"{tmp_fname}.pdf"
         # Create docx certificate by merging data in dict into docx template
-        merge_docx(docx_template, docx_output, data)
+        merge_docx(docx_template, tmp_docx_cert, data)
         # Export docx certificate to PDF format
         # docx2pdf.convert(docx_output, pdf_outputpath.name)  # Discarded, requires Microsoft Word to be installed
         # Requires LibreOffice to be installed, set path to libreoffice suitably
+
         subprocess.run(
             [
                 libre_office_path,
                 "--headless",
                 "--convert-to",
                 "pdf",
-                docx_output,
+                tmp_docx_cert,
             ]
-        )
+        )  # Automatically names the pdf file with same filename but a .pdf extension
         # Delete the docx certificate
-        Path(docx_output).unlink()
+        Path(tmp_docx_cert).unlink()
         qr_png = "qr.png"
         gen_qrpdf(data, qr_png)
         # Overlay certificate with QR Code
         qr_gen.pdf_overlay(
-            pdf_outputpath.name,
+            tmp_pdf_cert,
             Path(qr_png).with_suffix(".pdf").name,
             x1=72,
             y1=72,
@@ -198,8 +208,12 @@ def gen_cert(
         # Encrypt PDF
         owner_password = secrets.token_hex(5)
         data["owner_password"] = owner_password
-        encrypt_pdf(pdf_outputpath.name, owner_password=owner_password)
-    return owner_password, pdf_outputpath
+        encrypt_pdf(tmp_pdf_cert, owner_password=owner_password)
+        # Rename file
+        if exists(pdf_cert):
+            os.remove(pdf_cert)
+        os.rename(tmp_pdf_cert, pdf_cert)
+    return owner_password, pdf_cert
 
 
 def mangle_name(name: str) -> str:
@@ -288,12 +302,12 @@ def main(date, final, input_file):
         pdf_output = Path(docx_output).with_suffix(".pdf").name
         s = f'{data['certificate_number']:9} {data["student_name"]:30} {data["supervisor_name"]:30}'
         print(s, end=" ")
-        owner_password, pdf_outputpath = gen_cert(
+        owner_password, pdf_cert = gen_cert(
             data, docx_template, docx_output.name, pdf_output, final=final
         )
         data["owner_password"] = owner_password
 
-        s = f"{owner_password:12} {pdf_outputpath.name}"
+        s = f"{owner_password:12} {pdf_cert}"
         print(s)
 
     if final:
