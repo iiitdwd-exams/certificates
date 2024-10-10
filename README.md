@@ -1,6 +1,6 @@
 # `certificates`
 
-`certificates` is a purpose-built command-line application to generate certificates to be issued to interns completing their internship at Indian Institute of Information Technology Dharwad. Although it is specific to the needs of IIIT Dharwad, it can be easily adapted to other similar needs.
+`certificates` is a purpose-built command-line interface (CLI) to generate certificates to be issued to interns completing their internship at Indian Institute of Information Technology Dharwad. Although it is specific to the needs of IIIT Dharwad, it can be easily adapted to other similar needs.
 
 The general ideas on which it works are as follows:
 
