@@ -172,7 +172,6 @@ def gen_cert(
       4. Overlay the PDF with the QR code on the certificate
       5. Encrypt the overlaid PDF file
     """
-    # pdf_certpath = Path(pdf_cert)
     owner_password = ""
     if final:
         tmp_fname = get_randomm_filename()
@@ -181,9 +180,8 @@ def gen_cert(
         # Create docx certificate by merging data in dict into docx template
         merge_docx(docx_template, tmp_docx_cert, data)
         # Export docx certificate to PDF format
-        # docx2pdf.convert(docx_output, pdf_outputpath.name)  # Discarded, requires Microsoft Word to be installed
         # Requires LibreOffice to be installed, set path to libreoffice suitably
-
+        # Automatically names the pdf file: <filename>.docx -> <filename>.pdf
         subprocess.run(
             [
                 libre_office_path,
@@ -192,10 +190,10 @@ def gen_cert(
                 "pdf",
                 tmp_docx_cert,
             ]
-        )  # Automatically names the pdf file with same filename but a .pdf extension
+        )
         # Delete the docx certificate
         Path(tmp_docx_cert).unlink()
-        qr_png = "qr.png"
+        qr_png = f"qr_{tmp_fname}.png"
         gen_qrpdf(data, qr_png)
         # Overlay certificate with QR Code
         qr_gen.pdf_overlay(
