@@ -25,11 +25,6 @@ else:
     print(f"{sys.platform} not recognised. Program aborted.")
     sys.exit(0)
 
-# if sys.platform == "win32":
-#     libre_office_path = "c:/Program Files/LibreOffice/program/soffice.exe"
-# elif sys.platform == "darwin":
-#     libre_office_path = "/Applications/LibreOffice.app/Contents/MacOS/soffice"
-
 if not Path(libre_office_path).is_file():
     print(f"Could not find 'LibreOffice' at {libre_office_path}")
     print(
@@ -332,7 +327,8 @@ def main(date, final, input_file):
             config["certificate"]["year"] = int(cert_year)
             config["certificate"]["cert_num"] = int(cert_num)
             _ = toml.dump(config, f)
-
+        Path("gencert.toml").unlink()
+        Path("internship_cert.toml").rename("gencert.toml")
     return
 
 
