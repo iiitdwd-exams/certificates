@@ -21,9 +21,9 @@ elif sys.platform == "darwin":
     libre_office_path = "/Applications/LibreOffice.app/Contents/MacOS/soffice"
 
 if not Path(libre_office_path).is_file():
-    print(f"Could not find 'LibreOffice' to be installed at {libre_office_path}")
+    print(f"Could not find 'LibreOffice' at {libre_office_path}")
     print(
-        "Change the path if installed, else install LibreOffice. Then set the path in the script"
+        "Change the path if installed, else install 'LibreOffice'. Then set the path in the script"
     )
     print("Aborting program")
     sys.exit(0)
