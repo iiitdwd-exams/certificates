@@ -19,6 +19,11 @@ if sys.platform == "win32":
     libre_office_path = "c:/Program Files/LibreOffice/program/soffice.exe"
 elif sys.platform == "darwin":
     libre_office_path = "/Applications/LibreOffice.app/Contents/MacOS/soffice"
+elif sys.platform == "linux":
+    libre_office_path = "/usr/bin/soffice"
+else:
+    print(f"{sys.platform} not recognised. Program aborted.")
+    sys.exit(0)
 
 if not Path(libre_office_path).is_file():
     print(f"Could not find 'LibreOffice' at {libre_office_path}")
@@ -155,7 +160,12 @@ def encrypt_pdf(
     else:
         pdf = Pdf.open(pdf_infile)
     permissions = Permissions(
-        extract=False, modify_annotation=False, modify_other=False
+        extract=False,
+        modify_assembly=False,
+        modify_annotation=False,
+        modify_other=False,
+        print_highres=True,
+        print_lowres=True,
     )
     encryption = Encryption(user=user_password, owner=owner_password, allow=permissions)
     pdf.save(pdf_outfile, encryption=encryption)
@@ -317,7 +327,8 @@ def main(date, final, input_file):
             config["certificate"]["year"] = int(cert_year)
             config["certificate"]["cert_num"] = int(cert_num)
             _ = toml.dump(config, f)
-
+        Path("gencert.toml").unlink()
+        Path("internship_cert.toml").rename("gencert.toml")
     return
 
 
