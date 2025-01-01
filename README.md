@@ -70,8 +70,5 @@ Check all data in the certificates to verify everything is in order.
 A successful run of the script generates a CSV file is written, with the name of the `.xlsx` file suffixed with `_DB` and an extension `.csv`. It containes all data, including certificate number, owner password, which can be stored for subsequent use, if required.
 
 # To Do
-Certificate number has the format `YYYY/nnnn`, where `YYYY` is the four digit year during which the certificate is printed and `nnnn` is the four digit number of thecertificate in that year. The year and number of the last certificate printed is read from the `gencert.toml` file. Certificate numbering is continued from the number of the last certificate printed. If the current year, read from the system date is later than the year read from the `gencert.toml` file, the certificate number is reset to `1` and current year is used.
-
-However, the script, at present, does not write the year and certificate number back to `gencert.toml` at the end of printing all the certificates. These values must be changed manually by the user using a text editor.
-
-It is a straight-forward task to take input data from a CSV file instead of a Microsoft Excel `.xlsx` file, as long as the date format is handled correctly.
+1. Store data in a database, perhaps in an SQLite 3 database, instead of in a `.xlsx` file.
+2. Convert the application from a CLI to a Streamlit app.
