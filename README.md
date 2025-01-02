@@ -34,12 +34,24 @@ This project depends on the following Python packages:
 # Installation
 Follow these steps:
 
-1. Create a separate directory for the script and within that directory, create a virtual environment using Python 3.12+ and activate it.
-2. Use `uv` or `pip-tools` to manage package installation and updation. Install one of them `uv` or `pip-tools`. The best way is to use `pipx` to install them in their separate virtual environments and make them available to all projects.
-3. Clone the Github repository `git clone https://github.com/satish-annigeri/certificates.git`.
-4. Create `requirements.txt` using `uv` or `pip-compile` (`uv pip compile requirements.in -o requirements.txt` or `pip-compile requirements.in -o requirements.txt`)
-5. Install required packages using `uv` or `pi-sync`. (`uv pip sync requirements.txt` or `pip-sync requirements.txt`)
-6. Check if LibreOffice is installed, and if not, install it from here: `https://www.libreoffice.org/`. Determine the path where `soffice` is installed. On GNU/Linux, use the `which soffice` command and on Windows, use `where soffice` command. If it is already on the `PATH` environment variable, it will be located. Else, use any method to determine the path to `soffice`, such as, looking up the properties of LibreOffice in your Windows Start menu. Open the script `gencert.py` in your IDE and search for `libre_office_path` and change it appropriately.
+1. Choose the root directory where you wish to clone the GitHub repo
+2. Clone the Github repository `git clone https://github.com/satish-annigeri/certificates.git`.
+3. Change into the directory
+
+## Using `uv`
+To install `uv`, see instructions here: [Installing `uv`](https://docs.astral.sh/uv/getting-started/installation/). Alternately, you can install `uv` using `pipx`. See the next section for instructions to install `pipx`.
+
+4. Create the virtual environment and install the required packages with the single command `uv sync`
+
+## Using `pip-compile` and `pip-sync`
+Install, it is best to first install `pipx` using the installer for your operating system. See here for instructions: [Installing `pipx`](https://pipx.pypa.io/latest/installation/). After installing `pipx`, install `pip-tools` using `pipx` with the command `pipx install pip-tools`. Check to verify that `pip-compile` and `pip-sync` are available.
+
+4. Create a virtual environment inside the newly cloned directory with the command `python -m venv .venv`. The name of the virtual environment created by this command is `.venv`.
+5. Activate the virtual environment. On Microsoft Windows: `.venv\Scripts\activate`. On GNU/Linux: `soource .venv/bin/activate`.
+6. Create the `requirements.txt` file from the `requirements.in` file already present in the cloed directory with the command: `pip-compile requirements.in -o requirements.txt`
+7. Install the packages with the command: `pip-sync  requirements.txt`
+
+You could do the same using `uv` instead of using `pip-tools` as the commands `pip-compile` and `pip-sync` are built-in into `uv`. The equivalent `uv` commands are `uv pip compile` instead of `pip-compile` and `uv pip sync` instead of `pip-sync`.
 
 # Input Data
 Data is input in a Microsoft Excel `.xlsx` file. The following column names are mandatory:
@@ -55,6 +67,8 @@ Data is input in a Microsoft Excel `.xlsx` file. The following column names are 
 If any other columns are present, they will be read but not used.
 
 # Executing the Script
+Check if LibreOffice is installed, and if not, install it from here: `https://www.libreoffice.org/`. Determine the path where `soffice` is installed. On GNU/Linux, use the `which soffice` command and on Windows, use `where soffice` command. If it is already on the `PATH` environment variable, it will be located. Else, use any method to determine the path to `soffice`, such as, looking up the properties of LibreOffice in your Windows Start menu. Open the script `gencert.py` in your IDE and search for `libre_office_path` and change it appropriately.
+
 Place the input data file in the same directory as the script and execute the command:
 
 `(venv)>python gencert.py --no-final int_cert_data.xlsx`
@@ -72,3 +86,4 @@ A successful run of the script generates a CSV file is written, with the name of
 # To Do
 1. Store data in a database, perhaps in an SQLite 3 database, instead of in a `.xlsx` file.
 2. Convert the application from a CLI to a Streamlit app.
+3. Use gender to automatically generate "Mr." or "Ms. when printing student name on certificate (at present, this must be included with the name of student during input).
