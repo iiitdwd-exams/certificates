@@ -9,4 +9,4 @@ __pycache__
 requirements.txt
 cert_util.py
 internship_cert.toml
-gencert.toml
+.pikepdf.*
