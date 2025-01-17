@@ -241,23 +241,27 @@ def mangle_name(name: str) -> str:
     "-t",
     "--template",
     default="internship_certificate_template_3.docx",
+    show_default=True,
     help="Name of .docx template file with merge fields",
 )
 @click.option(
     "-d",
     "--date",
-    default="",
+    default=lambda: datetime.today().strftime("%d-%m-%Y"),
+    # show_default=True,
     help="Date in dd-mm-yyyy format, to be printed on certificate. Overrides today's date",
 )
 @click.option(
     "--final/--no-final",
     default=False,
+    show_default=True,
     help="Preview, do not actualy create certificates",
 )
 @click.option(
     "-c",
     "--config",
     default="gencert.toml",
+    show_default=True,
     help="Name of configuration file in TOML format",
 )
 @click.argument("input_file", type=click.Path(exists=True))
