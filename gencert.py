@@ -238,21 +238,34 @@ def mangle_name(name: str) -> str:
 
 @click.command()
 @click.option(
+    "-t",
+    "--template",
+    default="internship_certificate_template_3.docx",
+    help="Name of .docx template file with merge fields",
+)
+@click.option(
     "-d",
     "--date",
     default="",
-    help="Date in dd-mm-yyyy format, to be printed on certificate",
+    help="Date in dd-mm-yyyy format, to be printed on certificate. Overrides today's date",
 )
-@click.argument("input_file", type=click.Path(exists=True))
 @click.option(
     "--final/--no-final",
     default=False,
     help="Preview, do not actualy create certificates",
 )
-def main(date, final, input_file):
+@click.option(
+    "-c",
+    "--config",
+    default="gencert.toml",
+    help="Name of configuration file in TOML format",
+)
+@click.argument("input_file", type=click.Path(exists=True))
+def main(template, date, final, config, input_file):
     db_suffix = "_DB"
     # Input Data
-    docx_template = "internship_certificate_template_3.docx"
+    docx_template = template
+    # docx_template = "internship_certificate_template_3.docx"
     # input_file = "internship_certificates_20240826.xlsx"
     if not isfile(docx_template):
         print(f"Template file '{docx_template}' not found. Program aborted")
@@ -261,7 +274,8 @@ def main(date, final, input_file):
         print(f"Template file: {docx_template}")
 
     # Config file
-    config_file = "gencert.toml"
+    config_file = config
+    # config_file = "gencert.toml"
 
     if date == "":
         today = datetime.now()  #  datetime(2024, 8, 19) manually set date
@@ -282,15 +296,18 @@ def main(date, final, input_file):
         cert_num -= 1
     else:
         # Configuration data
-        config = toml.load(open(config_file, "r"))
-        cert_year = config["certificate"]["year"]
-        cert_num = config["certificate"]["cert_num"]
+        config_data = toml.load(open(config_file, "r"))
+        cert_year = config_data["certificate"]["year"]
+        cert_num = config_data["certificate"]["cert_num"]
     print(
         f"Continuing from previous data: Year = {cert_year}, Certificate number = {cert_num}"
     )
+    next_cert_year, next_cert_num = gen_cert_number(cert_year, cert_num)
+    print(f"Certificate numering will start with {next_cert_year}/{next_cert_num:04}")
 
     # Read and clean data
     df = read_df(input_file)
+    print()
     print(
         f"Input file: {input_file}. {len(df)} record{'s' if len(df) > 1 else ''} read"
     )
@@ -322,13 +339,13 @@ def main(date, final, input_file):
         pd.DataFrame(records).to_csv(
             Path(input_file).stem + f"{db_suffix}.csv", index=False
         )
-        print("Config file updated")
         with open("internship_cert.toml", "w") as f:
-            config["certificate"]["year"] = int(cert_year)
-            config["certificate"]["cert_num"] = int(cert_num)
-            _ = toml.dump(config, f)
-        Path("gencert.toml").unlink()
-        Path("internship_cert.toml").rename("gencert.toml")
+            config_data["certificate"]["year"] = int(cert_year)
+            config_data["certificate"]["cert_num"] = int(cert_num)
+            _ = toml.dump(config_data, f)
+        Path(config_file).unlink()
+        Path("internship_cert.toml").rename(config_file)
+        print(f"\nConfig file {config_file} updated")
     return
 
 
