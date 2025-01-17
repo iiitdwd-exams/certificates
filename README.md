@@ -53,6 +53,17 @@ Install, it is best to first install `pipx` using the installer for your operati
 
 You could do the same using `uv` instead of using `pip-tools` as the commands `pip-compile` and `pip-sync` are built-in into `uv`. The equivalent `uv` commands are `uv pip compile` instead of `pip-compile` and `uv pip sync` instead of `pip-sync`.
 
+# Configuration File
+The application depends on a configuration file in TOML format named `gencert.toml` in the same directory as the application. The format of the configuration file is as follows:
+```toml
+[certificate]
+year = 2024
+cert_num = 20
+```
+The fields represent the year and number of the most recent certificate generated. If the current year is greater than the year in the configuration file, the year value is set to the current year and certificate number is reset to 1.
+
+This file is overwritten at the end of each run of the application. The `year` and `cert_num` values can be manually changed by the user, if needed.
+
 # Input Data
 Data is input in a Microsoft Excel `.xlsx` file. The following column names are mandatory:
 1. `student_name`: Name of the student. If the student's name starts with one of `Mr.`, `Ms.`, or `Mrs.`, that portion, along with a trailing space if present, will be removed when used in printing the name in the certificate.
@@ -84,6 +95,7 @@ Check all data in the certificates to verify everything is in order.
 A successful run of the script generates a CSV file is written, with the name of the `.xlsx` file suffixed with `_DB` and an extension `.csv`. It containes all data, including certificate number, owner password, which can be stored for subsequent use, if required.
 
 # To Do
-1. Store data in a database, perhaps in an SQLite 3 database, instead of in a `.xlsx` file.
-2. Convert the application from a CLI to a Streamlit app.
-3. Use gender to automatically generate "Mr." or "Ms. when printing student name on certificate (at present, this must be included with the name of student during input).
+1. Store the data of all previously generated certificates in a persistent store. At present, data of each run are saved to a CSV file (with the name of the input file suffixed by `_DB`) and an aggregate list must be concatenated manually.
+2. Store data in a database, perhaps in an SQLite 3 database, instead of in a `.xlsx` file.
+3. Convert the application from a CLI to a Streamlit app.
+4. Use gender to automatically generate "Mr." or "Ms. when printing student name on certificate (at present, this must be included with the name of student during input).
