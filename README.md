@@ -54,15 +54,17 @@ Install, it is best to first install `pipx` using the installer for your operati
 You could do the same using `uv` instead of using `pip-tools` as the commands `pip-compile` and `pip-sync` are built-in into `uv`. The equivalent `uv` commands are `uv pip compile` instead of `pip-compile` and `uv pip sync` instead of `pip-sync`.
 
 # Configuration File
-The application depends on a configuration file in TOML format named `gencert.toml` in the same directory as the application. The format of the configuration file is as follows:
+The application depends on a configuration file in TOML format named `gencert.toml` in the same directory as the application. 
+
+The format of the configuration file is as follows:
 ```toml
 [certificate]
-year = 2024
-cert_num = 20
+year = 2025
+cert_num = 0
 ```
-The fields represent the year and number of the most recent certificate generated. If the current year is greater than the year in the configuration file, the year value is set to the current year and certificate number is reset to 1.
+The field `year` represent the four digit year and `cert_num` represents the number of the most recent certificate generated. Before the first run of the application, be sure to set `year` to the current year and `cert_num = 0` when you have not generated any certificates previously. This file is overwritten at the end of each run of the application. The `year` and `cert_num` values can be manually changed by the user, if needed.
 
-This file is overwritten at the end of each run of the application. The `year` and `cert_num` values can be manually changed by the user, if needed.
+If the current year is greater than the year in the configuration file, the year value is set to the current year and certificate number is reset to 1.
 
 # Input Data
 Data is input in a Microsoft Excel `.xlsx` file. The following column names are mandatory:
